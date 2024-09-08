@@ -97,3 +97,6 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# Ignore all data directories
+/data/
