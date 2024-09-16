@@ -1,7 +1,8 @@
 let express = require('express');
 let router = express.Router();
 const { Article } = require("../../models")
-const {Op} = require('sequelize')
+const { Op } = require('sequelize')
+const { NotFoundError,success,failure } = require("../../untils/response")
 
 // 一般搜尋 => 模糊查詢 => 分頁搜尋
 //admin/articles
@@ -33,22 +34,12 @@ router.get('/', async(req, res, next)=>{
     }
     // count是表全部的總數,row是分頁查詢出的資料
     const {count ,rows} = await Article.findAndCountAll(condition)
-    res.json({
-      coed:200,
-      message:'查詢文章列表成功',
-      total:count,
-      // currentPage,
-      // pageSize,
-      data:{
-        articles:rows
-      }
+    success(res,'查詢文章列表成功' ,{
+      count,
+      data:rows, 
     })
   }catch(e){
-    res.status(500).json({
-      status:500,
-      message:'查詢文章列表失敗',
-      error:[e.message]
-    })
+    failure(res,e)
   }
 })
 
@@ -56,56 +47,27 @@ router.get('/', async(req, res, next)=>{
 //admin/articles/${id}
 router.get('/:id', async(req, res, next)=>{
   try{
-    const {id} = req.params
-    const articles = await Article.findByPk(id)
-    if(articles){
-      res.json({
-        status:true,
-        message:'查詢文章列表成功',
-        data:{articles}
-      })
-    }else{
-      res.status(400).json({
-        status:false,
-        message:'無此文章'
-      })
-    }
+    const article = await getArticle(req)
+    success(res,'查詢文章列表成功' ,{data:article})
   }catch(e){
-    res.status(500).json({
-      status:false,
-      message:'查詢文章列表失敗',
-      error:[e.message]
-    })
+    failure(res,e)
   }
 });
 
-// 新增
+//新增
 //admin/articles
 router.post('/', async(req, res, next)=>{
-
   try{
-    const article = await Article.create(req.body)
-    res.status(201).json({
-      code:200,
-      status:true,
-      message:'創建文章成功',
-      data:article
+    const body = filterBody(req)
+    const article = await Article.create(body)
+    success(res,'創建文章成功' , {
+      data:article,
+      code:201
     })
+   
   }catch(e){
-    if(e.name==='SequelizeValidationError'){
-      const handleError = e.errors.map(item=>item.message)
-      res.status(400).json({
-        code:400,
-        message:'請求參數錯誤',
-        error:handleError
-      })
-    }else{
-      res.status(500).json({
-        status:false,
-        message:'新增文章失敗',
-        error:[e.message]
-      })
-    }
+    console.log('我是錯誤e',e);
+    failure(res,e)
   }
 });
 
@@ -113,21 +75,11 @@ router.post('/', async(req, res, next)=>{
 //admin/articles/${id}
 router.delete('/:id', async(req, res, next)=>{
   try{
-    const {id} = req.params
-    const article = await Article.findByPk(id)
-    if(article){
-      await article.destroy()
-      res.json({
-        code:200,
-        message:'刪除文章成功',
-      })
-    }
+    const article = await getArticle(req)  
+    await article.destroy()
+    success(res,'刪除文章成功')
   }catch(e){
-    res.status(500).json({
-      status:false,
-      message:'新增文章失敗',
-      error:[e.message]
-    })
+    failure(res,e)
   }
 });
 
@@ -135,30 +87,47 @@ router.delete('/:id', async(req, res, next)=>{
 //admin/articles/${id}
 router.put('/:id', async(req, res, next)=>{
   try{
-    const {id} = req.params
-    const article = await Article.findByPk(id)
-    if(article){
-      await article.update(req.body)
-      res.json({
-        code:200,
-        message:'更新文章成功',
-        data:article
-      })
-    }else{
-      res.status(404).json({
-        code:404,
-        message:'更新未找到',
-      })
-    }
+    const body = filterBody(req)
+    const article = await getArticle(body)
+    await article.update(req.body)
+    success(res,'更新文章成功')
+    
   }catch(e){
-    res.status(500).json({
-      status:500,
-      message:'更新文章失敗',
-      error:[e.message]
-    })
+    failure(res,e)
   }
 });
 
+/**
+ * 公共方法：透過id取得單筆資料
+ * @param req
+ * @returns {Promise<Article>}
+ */
+async function getArticle(req){
+  // 获取文章 ID
+  const { id } = req.params;
 
+  // 查询当前文章
+  const article = await Article.findByPk(id);
+
+  // 如果没有找到, 就抛出异常
+  if (!article) {
+    throw new NotFoundError(`ID: ${id} 的文章未找到。`);
+  }
+
+  return article;
+}
+
+/**
+ * 公共方法：過濾參數
+ * @param req
+ * @returns {{title, content: (string|string|DocumentFragment|*)}}
+ */
+
+function filterBody(req){
+  return {
+    title: req.body.title,
+    content: req.body.content
+  };
+}
 
 module.exports = router;
