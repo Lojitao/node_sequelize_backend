@@ -103,18 +103,12 @@ router.put('/:id', async(req, res, next)=>{
  * @returns {Promise<Category>}
  */
 async function getCategory(req){
-  // 获取分類 ID
-  // console.log('req',req);
-  
-  const { id } = req.params;
-
   // 查询当前分類
+  const { id } = req.params;
   const category = await Category.findByPk(id);
 
   // 如果没有找到, 就抛出异常
-  if (!category) {
-    throw new NotFoundError(`ID: ${id} 的分類未找到。`);
-  }
+  if (!category) throw new NotFoundError(`ID: ${id} 的分類未找到。`);
 
   return category;
 }
@@ -126,8 +120,6 @@ async function getCategory(req){
  */
 
 function filterBody(req){
-  console.log('req',req);
-  
   return {
     name: req.body.name,
     rank: req.body.rank
