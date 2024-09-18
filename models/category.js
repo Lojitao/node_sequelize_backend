@@ -17,11 +17,14 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: { msg: '名称已存在，请选择其他名称。' },
       validate: {
-        notNull: { msg: '名称必须填写。' },
-        notEmpty: { msg: '名称不能为空。' },
-        len: { args: [2, 45], msg: '长度必须是2 ~ 45之间。' }
+        notNull: { msg: '名稱必須填寫。' },
+        notEmpty: { msg: '名稱不能為空。' },
+        len: { args: [2, 45], msg: '長度必須是 2 ~ 45 之間。' },
+        async isUnique(value) {
+          const category = await Category.findOne({ where: { name: value } });
+          if (category)  throw new Error('名稱已存在，請選擇其他名稱。')
+        }
       }
     },
     rank: {

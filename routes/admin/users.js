@@ -1,11 +1,11 @@
 let express = require('express');
 let router = express.Router();
-const { Article } = require("../../models")
+const { User } = require("../../models")
 const { Op } = require('sequelize')
 const { NotFoundError,success,failure } = require("../../untils/response")
 
 // 一般搜尋 => 模糊查詢 => 分頁搜尋
-//admin/articles
+//admin/users
 router.get('/', async(req, res, next)=>{
   try{
     const query = req.query
@@ -25,40 +25,16 @@ router.get('/', async(req, res, next)=>{
       limit:pageSize,
       offset:offset
     }
-    if (query.email) {
+    if(query.title){
       condition.where = {
-        email: {
-          [Op.eq]: query.email//精確查找
+        title:{
+          [Op.like]:`%${query.title}%`
         }
-      };
-    }
-    
-    if (query.username) {
-      condition.where = {
-        username: {
-          [Op.eq]: query.username//精確查找
-        }
-      };
-    }
-    
-    if (query.nickname) {
-      condition.where = {
-        nickname: {
-          [Op.like]: `%${ query.nickname }%`//模糊查找
-        }
-      };
-    }
-    
-    if (query.role) {
-      condition.where = {
-        role: {
-          [Op.eq]: query.role//精確查找
-        }
-      };
+      }
     }
     // count是表全部的總數,row是分頁查詢出的資料
-    const {count ,rows} = await Article.findAndCountAll(condition)
-    success(res,'查詢文章列表成功' ,{
+    const {count ,rows} = await User.findAndCountAll(condition)
+    success(res,'查詢使用者列表成功' ,{
       count,
       data:rows, 
     })
@@ -68,24 +44,24 @@ router.get('/', async(req, res, next)=>{
 })
 
 // 取得單筆
-//admin/articles/${id}
+//admin/users/${id}
 router.get('/:id', async(req, res, next)=>{
   try{
-    const article = await getArticle(req)
-    success(res,'查詢文章列表成功' ,{data:article})
+    const user = await getUser(req)
+    success(res,'查詢使用者列表成功' ,{data:user})
   }catch(e){
     failure(res,e)
   }
 });
 
 //新增
-//admin/articles
+//admin/users
 router.post('/', async(req, res, next)=>{
   try{
     const body = filterBody(req)
-    const article = await Article.create(body)
-    success(res,'創建文章成功' , {
-      data:article,
+    const user = await User.create(body)
+    success(res,'創建使用者成功' , {
+      data:user,
       code:201
     })
    
@@ -95,14 +71,26 @@ router.post('/', async(req, res, next)=>{
   }
 });
 
+// 刪除
+//admin/users/${id}
+router.delete('/:id', async(req, res, next)=>{
+  try{
+    const user = await getUser(req)  
+    await user.destroy()
+    success(res,'刪除使用者成功')
+  }catch(e){
+    failure(res,e)
+  }
+});
+
 //更新
-//admin/articles/${id}
+//admin/users/${id}
 router.put('/:id', async(req, res, next)=>{
   try{
     const body = filterBody(req)
-    const article = await getArticle(req)
-    await article.update(body)
-    success(res,'更新文章成功')
+    const user = await getUser(req)
+    await user.update(body)
+    success(res,'更新使用者成功')
     
   }catch(e){
     failure(res,e)
@@ -112,18 +100,17 @@ router.put('/:id', async(req, res, next)=>{
 /**
  * 公共方法：透過id取得單筆資料
  * @param req
- * @returns {Promise<Article>}
+ * @returns {Promise<User>}
  */
-async function getArticle(req){
-  
-  // 查询当前文章
+async function getUser(req){
+  // 查询当前使用者
   const { id } = req.params;
-  const article = await Article.findByPk(id);
+  const user = await User.findByPk(id);
 
   // 如果没有找到, 就抛出异常
-  if (!article) throw new NotFoundError(`ID: ${id} 的文章未找到。`);
+  if (!user) throw new NotFoundError(`ID: ${id} 的使用者未找到。`);
 
-  return article;
+  return user;
 }
 
 /**
@@ -134,8 +121,15 @@ async function getArticle(req){
 
 function filterBody(req){
   return {
-    title: req.body.title,
-    content: req.body.content
+    email: req.body.email,
+    username: req.body.username,
+    password: req.body.password,
+    nickname: req.body.nickname,
+    sex: req.body.sex,
+    company: req.body.company,
+    introduce: req.body.introduce,
+    role: req.body.role,
+    avatar: req.body.avatar,
   };
 }
 
