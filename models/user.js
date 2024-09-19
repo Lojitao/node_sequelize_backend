@@ -89,9 +89,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     avatar: {
       type: DataTypes.STRING,
-      // validate: {
-      //   isUrl: { msg: '图片地址不正确。' }
-      // }
+      validate: {
+        isUrl: { msg: '图片地址不正确。' }
+      }
     }
   }, {
     sequelize,
