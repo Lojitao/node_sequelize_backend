@@ -25,13 +25,38 @@ router.get('/', async(req, res, next)=>{
       limit:pageSize,
       offset:offset
     }
-    if(query.title){
+    if (query.email) {
       condition.where = {
-        title:{
-          [Op.like]:`%${query.title}%`
+        email: {
+          [Op.eq]: query.email//精確查找
         }
-      }
+      };
     }
+    
+    if (query.username) {
+      condition.where = {
+        username: {
+          [Op.eq]: query.username//精確查找
+        }
+      };
+    }
+    
+    if (query.nickname) {
+      condition.where = {
+        nickname: {
+          [Op.like]: `%${ query.nickname }%`//模糊查找
+        }
+      };
+    }
+    
+    if (query.role) {
+      condition.where = {
+        role: {
+          [Op.eq]: query.role//精確查找
+        }
+      };
+    }
+
     // count是表全部的總數,row是分頁查詢出的資料
     const {count ,rows} = await User.findAndCountAll(condition)
     success(res,'查詢使用者列表成功' ,{
@@ -67,18 +92,6 @@ router.post('/', async(req, res, next)=>{
    
   }catch(e){
     console.log('我是錯誤e',e);
-    failure(res,e)
-  }
-});
-
-// 刪除
-//admin/users/${id}
-router.delete('/:id', async(req, res, next)=>{
-  try{
-    const user = await getUser(req)  
-    await user.destroy()
-    success(res,'刪除使用者成功')
-  }catch(e){
     failure(res,e)
   }
 });

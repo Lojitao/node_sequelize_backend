@@ -25,36 +25,12 @@ router.get('/', async(req, res, next)=>{
       limit:pageSize,
       offset:offset
     }
-    if (query.email) {
+    if(query.title){
       condition.where = {
-        email: {
-          [Op.eq]: query.email//精確查找
+        title:{
+          [Op.like]:`%${query.title}%`
         }
-      };
-    }
-    
-    if (query.username) {
-      condition.where = {
-        username: {
-          [Op.eq]: query.username//精確查找
-        }
-      };
-    }
-    
-    if (query.nickname) {
-      condition.where = {
-        nickname: {
-          [Op.like]: `%${ query.nickname }%`//模糊查找
-        }
-      };
-    }
-    
-    if (query.role) {
-      condition.where = {
-        role: {
-          [Op.eq]: query.role//精確查找
-        }
-      };
+      }
     }
     // count是表全部的總數,row是分頁查詢出的資料
     const {count ,rows} = await Article.findAndCountAll(condition)
@@ -106,6 +82,18 @@ router.put('/:id', async(req, res, next)=>{
     
   }catch(e){
     failure(res,e)
+  }
+});
+
+// 刪除
+// /admin/articles/${id}
+router.delete('/:id', async(req, res, next) => {
+  try {
+    const article = await getArticle(req)
+    await article.destroy()
+    success(res, '刪除文章成功')
+  } catch(e) {
+    failure(res, e)
   }
 });
 
