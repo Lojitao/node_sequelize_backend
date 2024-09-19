@@ -1,6 +1,6 @@
 let express = require('express');
 let router = express.Router();
-const { Category } = require("../../models")
+const { Category,Course } = require("../../models")
 const { Op } = require('sequelize')
 const { NotFoundError,success,failure } = require("../../untils/response")
 
@@ -75,7 +75,10 @@ router.post('/', async(req, res, next)=>{
 //admin/category/${id}
 router.delete('/:id', async(req, res, next)=>{
   try{
-    const category = await getCategory(req)  
+    const category = await getCategory(req)
+
+    const count = await Course.count({ where: { categoryId: req.params.id } });
+    if (count > 0) throw new Error('當前分類有課程，無法刪除。');
     await category.destroy()
     success(res,'刪除分類成功')
   }catch(e){
@@ -105,7 +108,18 @@ router.put('/:id', async(req, res, next)=>{
 async function getCategory(req){
   // 查询当前分類
   const { id } = req.params;
-  const category = await Category.findByPk(id);
+
+  const condition = {
+    include: [
+      {
+        model: Course,
+        as: 'courses',
+        attributes: ['id', 'name','userId']
+      },
+    ]
+  }
+
+  const category = await Category.findByPk(id,condition);
 
   // 如果没有找到, 就抛出异常
   if (!category) throw new NotFoundError(`ID: ${id} 的分類未找到。`);
