@@ -1,6 +1,6 @@
 let express = require('express');
 let router = express.Router();
-const { Course,Category,User } = require("../../models")
+const { Course,Category,User,Chapter } = require("../../models")
 const { Op } = require('sequelize')
 const { NotFoundError,success,failure } = require("../../untils/response")
 
@@ -129,6 +129,8 @@ router.put('/:id', async(req, res, next)=>{
 router.delete('/:id', async(req, res, next) => {
   try {
     const course = await getCourse(req)
+    const count = await Chapter.count({ where: { courseId: req.params.id } });
+    if (count > 0) throw new Error('當前課程存在章節，無法刪除。');
     await course.destroy()
     success(res, '刪除文章成功')
   } catch(e) {
