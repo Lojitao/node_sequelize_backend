@@ -5,6 +5,8 @@ const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs')
 const { BadRequestError, UnauthorizedError, NotFoundError } = require('../../utils/errors');
 const { success, failure } = require('../../utils/response');
+const jwt = require('jsonwebtoken')
+const crypto = require('crypto')//node自帶
 
 /**
  * 管理员登录
@@ -36,7 +38,18 @@ router.post('/sign_in', async (req, res) => {
     // 驗證是否管理員
     if (user.role !== 100) throw new UnauthorizedError('您沒有權限登錄管理員後台。');
 
-    success(res, '登入成功。', { });
+    
+    //生成隨機的 32 字符長度的密鑰
+    const secret = crypto.randomBytes(32).toString('hex');
+    
+    //生成身份驗證令牌
+    const token = jwt.sign(
+      {userId: user.id},
+      secret, 
+      {expiresIn: '3h'}
+    );
+
+    success(res, '登入成功。', { data:token });
   } catch (error) {
     failure(res, error);
   }
