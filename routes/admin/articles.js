@@ -9,6 +9,7 @@ const { success,failure } = require("../../utils/response")
 //admin/articles
 router.get('/', async(req, res, next)=>{
   try{
+    return res.json({ currentUser: req.user });
     const query = req.query
 
     // 當前第幾頁，沒傳預設第一頁。

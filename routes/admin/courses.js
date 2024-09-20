@@ -98,7 +98,8 @@ router.get('/:id', async(req, res, next)=>{
 //admin/courses
 router.post('/', async(req, res, next)=>{
   try{
-    const body = filterBody(req)
+    const body = filterBody(req)  
+    body.userId = req.user.id//取得從middlewares賦值的user
     const course = await Course.create(body)
     success(res,'創建文章成功' , {
       data:course,
@@ -190,7 +191,7 @@ async function getCourse(req){
 function filterBody(req){
   return {
     categoryId: req.body.categoryId,
-    userId: req.body.userId,
+    // userId: req.body.userId,
     name: req.body.name,
     image: req.body.image,
     recommended: req.body.recommended,

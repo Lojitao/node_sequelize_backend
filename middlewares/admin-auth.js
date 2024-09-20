@@ -20,6 +20,7 @@ module.exports = async (req, res, next) => {
     
     // 驗證當前用戶是否是管理員
     if (user.role !== 100) throw new UnauthorizedError('您沒有權限使用當前接口。');
+    console.log('userxxxxx',user);
     
     // 如果通過驗證，將 user 對象賦值到 req 上，方便後續中間件或路由使用
     req.user = user;
