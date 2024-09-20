@@ -2,7 +2,8 @@ let express = require('express');
 let router = express.Router();
 const { User } = require("../../models")
 const { Op } = require('sequelize')
-const { NotFoundError,success,failure } = require("../../untils/response")
+const { NotFoundError } = require('../../utils/errors');
+const { success,failure } = require("../../utils/response")
 
 // 一般搜尋 => 模糊查詢 => 分頁搜尋
 //admin/users
