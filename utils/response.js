@@ -33,8 +33,8 @@ function failure(res, error) {
 
   if (error.name === 'BadRequestError') {
     return res.status(400).json({
-      status: false,
-      message: '请求参数错误',
+      status: 400,
+      message: '請求參數錯誤',
       errors: [error.message]
     });
   }
@@ -42,7 +42,7 @@ function failure(res, error) {
   if (error.name === 'UnauthorizedError') {
     return res.status(401).json({
       status: false,
-      message: '认证失败',
+      message: '認證失敗',
       errors: [error.message]
     });
   }
