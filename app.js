@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const middleAuth = require('./middlewares/admin-auth')//引入中間件
 require('dotenv').config()//引入環境變數
 
 const indexRouter = require('./routes/index');
@@ -28,14 +29,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 // 後臺路由配置
-app.use('/admin/articles', adminArticles);
-app.use('/admin/category', adminCategory);
-app.use('/admin/settings', adminSetting);
-app.use('/admin/users', adminUser);
-app.use('/admin/courses', adminCourse);
-app.use('/admin/chapters', adminChapter);
-app.use('/admin/charts', adminChart);
-app.use('/admin/auth', adminAuth);
+app.use('/admin/articles', middleAuth , adminArticles);
+app.use('/admin/category', middleAuth , adminCategory);
+app.use('/admin/settings', middleAuth , adminSetting);
+app.use('/admin/users',    middleAuth , adminUser);
+app.use('/admin/courses',  middleAuth , adminCourse);
+app.use('/admin/chapters', middleAuth , adminChapter);
+app.use('/admin/charts',   middleAuth , adminChart);
+app.use('/admin/auth' , adminAuth);
 
 
 module.exports = app;

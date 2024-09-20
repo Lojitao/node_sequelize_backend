@@ -22,6 +22,25 @@ function success(res, message, options = {}) {
 
 //自訂義錯誤處理
 function failure(res, error) {
+  // 處理token--start
+  if (error.name === 'JsonWebTokenError') {
+    return res.status(401).json({
+      status: 401,
+      message: '認證失敗',
+      errors: ['您提交的 token 錯誤。']
+    });
+  }
+  
+  if (error.name === 'TokenExpiredError') {
+    return res.status(401).json({
+      status: 401,
+      message: '認證失敗',
+      errors: ['您的 token 已過期。']
+    });
+  }
+  // 處理token--end
+
+
   if (error.name === 'SequelizeValidationError') {
     const errors = error.errors.map(e => e.message)
     return res.status(400).json({

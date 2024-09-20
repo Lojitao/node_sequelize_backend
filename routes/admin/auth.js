@@ -40,13 +40,15 @@ router.post('/sign_in', async (req, res) => {
 
     
     //生成隨機的 32 字符長度的密鑰
-    const secret = crypto.randomBytes(32).toString('hex');
+    // const secret = crypto.randomBytes(32).toString('hex');
+    // console.log('secret',secret);
     
+
     //生成身份驗證令牌
     const token = jwt.sign(
       {userId: user.id},
-      secret, 
-      {expiresIn: '3h'}
+      process.env.SECRET, 
+      {expiresIn: '30s'}
     );
 
     success(res, '登入成功。', { data:token });
