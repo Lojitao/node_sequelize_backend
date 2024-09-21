@@ -9,7 +9,9 @@ require('dotenv').config()//引入環境變數
 
 //前台路由文件
 const indexRouter = require('./routes/index');
+const categoriesRouter = require('./routes/categories');
 const usersRouter = require('./routes/users');
+const coursesRouter = require('./routes/courses');
 // const likeRouter = require('./routes/likes')
 
 // 後臺路由文件
@@ -36,7 +38,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // TODO:要有中間件
 // app.use('/like' , likeRouter);
 app.use('/', indexRouter);
+app.use('/categories', categoriesRouter);
 app.use('/users', usersRouter);
+app.use('/courses', coursesRouter);
 
 
 // 後臺路由配置
