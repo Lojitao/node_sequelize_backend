@@ -1,14 +1,11 @@
-'use strict';
+const moment = require('moment/moment')
+moment.locale('zh-tw')
+
 const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Course extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
       models.Course.belongsTo(models.Category,{as:'category'});
       models.Course.belongsTo(models.User,{as:'user'});
@@ -46,7 +43,19 @@ module.exports = (sequelize, DataTypes) => {
     introductory: DataTypes.BOOLEAN,
     content: DataTypes.TEXT,
     likesCount: DataTypes.INTEGER,
-    chaptersCount: DataTypes.INTEGER
+    chaptersCount: DataTypes.INTEGER,
+    createdAt:{
+      type:DataTypes.DATE,
+      get(){
+        return moment(this.getDataValue("createdAt")).format("LL")
+      }
+    },
+    updatedAt:{
+      type:DataTypes.DATE,
+      get(){
+        return moment(this.getDataValue("updatedAt")).format("LL")
+      }
+    }
   }, {
     sequelize,
     modelName: 'Course',
