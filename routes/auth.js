@@ -28,8 +28,6 @@ router.post('/sign_up', async (req, res) => {
   }
 });
 
-
-
 /**
  * 用戶登入
  * POST /auth/sign_in

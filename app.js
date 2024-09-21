@@ -2,7 +2,8 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const middleAuth = require('./middlewares/admin-auth')//引入中間件
+const adminMiddleAuth = require('./middlewares/admin-auth')//引入中間件
+const userMiddleAuth = require('./middlewares/user-auth')//引入中間件
 require('dotenv').config()//引入環境變數
 
 
@@ -43,7 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/like' , likeRouter);
 app.use('/', indexRouter);
 app.use('/categories', categoriesRouter);
-app.use('/users', usersRouter);
+app.use('/users', userMiddleAuth , usersRouter);
 app.use('/courses', coursesRouter);
 app.use('/chapters', chaptersRouter);
 app.use('/settings', settingsRouter);
@@ -54,13 +55,13 @@ app.use('/auth', authRouter);
 
 
 // 後臺路由配置
-app.use('/admin/articles', middleAuth , adminArticles);
-app.use('/admin/category', middleAuth , adminCategory);
-app.use('/admin/settings', middleAuth , adminSetting);
-app.use('/admin/users',    middleAuth , adminUser);
-app.use('/admin/courses',  middleAuth , adminCourse);
-app.use('/admin/chapters', middleAuth , adminChapter);
-app.use('/admin/charts',   middleAuth , adminChart);
+app.use('/admin/articles', adminMiddleAuth , adminArticles);
+app.use('/admin/category', adminMiddleAuth , adminCategory);
+app.use('/admin/settings', adminMiddleAuth , adminSetting);
+app.use('/admin/users',    adminMiddleAuth , adminUser);
+app.use('/admin/courses',  adminMiddleAuth , adminCourse);
+app.use('/admin/chapters', adminMiddleAuth , adminChapter);
+app.use('/admin/charts',   adminMiddleAuth , adminChart);
 app.use('/admin/auth' , adminAuth);
 
 

@@ -15,8 +15,8 @@ module.exports = async (req, res, next) => {
     const { userId } = decoded;
     
     // 如果通過驗證，將 userId 對象賦值到 req 上，方便後續中間件或路由使用
-    req.user = userId;
-    
+    req.userId = userId;
+
     next();// 一定要加 next()，才能繼續進入到後續中間件或路由
   } catch (error) {
     failure(res, error);
