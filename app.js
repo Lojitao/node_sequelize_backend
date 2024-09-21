@@ -18,6 +18,9 @@ const adminChapter = require('./routes/admin/chapter');
 const adminChart = require('./routes/admin/chart');
 const adminAuth = require('./routes/admin/auth');
 
+//前台路由文件
+// const likeRouter = require('./routes/likes')
+
 const app = express();
 
 app.use(logger('dev'));
@@ -37,6 +40,10 @@ app.use('/admin/courses',  middleAuth , adminCourse);
 app.use('/admin/chapters', middleAuth , adminChapter);
 app.use('/admin/charts',   middleAuth , adminChart);
 app.use('/admin/auth' , adminAuth);
+
+// 前台路由配置
+// TODO:要有中間件
+// app.use('/like' , likeRouter);
 
 
 module.exports = app;
