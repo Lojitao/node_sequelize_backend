@@ -15,6 +15,7 @@ const coursesRouter = require('./routes/courses');
 const chaptersRouter = require('./routes/chapter');
 const settingsRouter = require('./routes/settings');
 const searchRouter = require('./routes/search');
+const authRouter = require('./routes/auth');
 // const likeRouter = require('./routes/likes')
 
 // 後臺路由文件
@@ -48,6 +49,7 @@ app.use('/chapters', chaptersRouter);
 app.use('/settings', settingsRouter);
 app.use('/settings', settingsRouter);
 app.use('/search', searchRouter);
+app.use('/auth', authRouter);
 
 
 
