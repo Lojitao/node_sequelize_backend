@@ -4,7 +4,7 @@ const { User } = require('../../models');
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs')
 const { BadRequestError, UnauthorizedError, NotFoundError } = require('../../utils/errors');
-const { success, failure } = require('../../utils/response');
+const { success, failure } = require('../../utils/responses');
 const jwt = require('jsonwebtoken')
 // const crypto = require('crypto')//node自帶
 

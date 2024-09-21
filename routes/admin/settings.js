@@ -3,7 +3,7 @@ let router = express.Router();
 const { Setting } = require("../../models")
 // const { Op } = require('sequelize')
 const { NotFoundError } = require('../../utils/errors');
-const { success,failure } = require("../../utils/response")
+const { success,failure } = require("../../utils/responses")
 
 // 取得單筆
 //admin/setting
