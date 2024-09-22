@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
       models.Course.belongsTo(models.Category,{as:'category'});
       models.Course.belongsTo(models.User,{as:'user'});
       models.Course.hasMany(models.Chapter, { as: 'chapters' });
+      models.Course.belongsToMany(models.User, {
+        through: models.Like,
+        foreignKey: 'courseId',
+        as: 'likeUsers'
+      });
     }
   }
   Course.init({//Course表和Category表及User表是有關聯的

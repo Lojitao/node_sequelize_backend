@@ -7,7 +7,6 @@ const userMiddleAuth = require('./middlewares/user-auth')//引入中間件
 require('dotenv').config()//引入環境變數
 
 
-
 //前台路由文件
 const indexRouter = require('./routes/index');
 const categoriesRouter = require('./routes/categories');
@@ -17,7 +16,7 @@ const chaptersRouter = require('./routes/chapter');
 const settingsRouter = require('./routes/settings');
 const searchRouter = require('./routes/search');
 const authRouter = require('./routes/auth');
-// const likeRouter = require('./routes/likes')
+const likeRouter = require('./routes/like')
 
 // 後臺路由文件
 const adminArticles = require('./routes/admin/articles');
@@ -40,18 +39,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // 前台路由配置
-// TODO:要有中間件
-// app.use('/like' , likeRouter);
 app.use('/', indexRouter);
 app.use('/categories', categoriesRouter);
-app.use('/users', userMiddleAuth , usersRouter);
 app.use('/courses', coursesRouter);
 app.use('/chapters', chaptersRouter);
 app.use('/settings', settingsRouter);
 app.use('/settings', settingsRouter);
 app.use('/search', searchRouter);
 app.use('/auth', authRouter);
-
+app.use('/users', userMiddleAuth , usersRouter);
+app.use('/like', userMiddleAuth ,likeRouter);
 
 
 // 後臺路由配置
