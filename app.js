@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const adminMiddleAuth = require('./middlewares/admin-auth')//引入中間件
 const userMiddleAuth = require('./middlewares/user-auth')//引入中間件
+const cors = require('cors')//引入cors套件
 require('dotenv').config()//引入環境變數
 
 
@@ -37,6 +38,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+const allowOrigin ={// 白名單：可發請求的域名
+  origin:[
+    'https://clwy.cn',
+    'http://127.0.0.1:5500'
+  ]
+}
+app.use(cors(allowOrigin))//ＣCORS配置，位置一定要放在路由上面！！！
 
 // 前台路由配置
 app.use('/', indexRouter);
