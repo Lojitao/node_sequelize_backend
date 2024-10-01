@@ -1,68 +1,40 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
-
 let app = require('../app');
 let debug = require('debug')('clwy-api:server');
 let http = require('http');
+const sequelize = require('../config/database');  // 引入 Sequelize 連接
 
-/**
- * Get port from environment and store in Express.
- */
-
-let port = normalizePort(process.env.PORT || '3000');
+let port = normalizePort(process.env.PORT || '3000');//要和docker-compose.yml的app的ports右邊docker ports一樣
 app.set('port', port);
-
-/**
- * Create HTTP server.
- */
 
 let server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+// // 先進行資料庫連接驗證
+sequelize.authenticate()
+  .then(() => {
+    console.log('sequelize進行資料庫連接驗證，成功.');
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
+    // 資料庫連接成功後再啟動伺服器
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+  })
+  .catch(err => {
+    console.error('sequelize進行資料庫連接驗證，失敗！！！', err);
+    process.exit(1);  // 若資料庫連接失敗，退出程序
+  });
 
 function normalizePort(val) {
   let port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
+  if (isNaN(port)) return val;
+  if (port >= 0) return port;
   return false;
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
-
 function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  let bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
+  if (error.syscall !== 'listen') throw error;
+  let bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
@@ -77,14 +49,8 @@ function onError(error) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-
 function onListening() {
   let addr = server.address();
-  let bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
+  let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }

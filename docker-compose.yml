@@ -1,14 +1,52 @@
+# services:
+#   mysql:
+#     image: mysql:8.3.0
+#     command:
+#       --default-authentication-plugin=mysql_native_password
+#       --character-set-server=utf8mb4
+#       --collation-server=utf8mb4_general_ci
+#     environment:
+#       - MYSQL_ROOT_PASSWORD=clwy1234
+#       - MYSQL_LOWER_CASE_TABLE_NAMES=0
+#     ports:
+#       - "3306:3306"
+#     volumes:
+#       - ./data/mysql:/var/lib/mysql
+version: '3'
 services:
+  # MySQL 服務
   mysql:
     image: mysql:8.3.0
+    container_name: clwy-api  # mysql容器名稱要與與圖形化介面的Name一致
     command:
       --default-authentication-plugin=mysql_native_password
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_general_ci
     environment:
       - MYSQL_ROOT_PASSWORD=clwy1234
+      # - MYSQL_DATABASE=clwy_api_development  # MySQL 容器內部創建的資料庫名稱，可隨意命名，但應與 DB_NAME 一致
       - MYSQL_LOWER_CASE_TABLE_NAMES=0
     ports:
       - "3306:3306"
     volumes:
-      - ./data/mysql:/var/lib/mysql
+      # 將容器內部的數據儲存在宿主機上或外部存儲上，而不是儲存在容器內部。這樣，即使 Docker 容器被刪除、重啟，數據依然保存在宿主機上，不會丟失。
+      - ./data/mysql:/var/lib/mysql 
+
+  # Node.js 服務
+  app:
+    build: .
+    container_name: clwy-api-node_container  # 這是Node容器的名稱
+    ports:
+      - "3038:3039" #左邊是伺服器端口：右邊是docker運行端口
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - mysql
+    environment: #設置容器內的參數
+      - DB_HOST=clwy-api  # 這裡的 DB_HOST 必須與MySQL容器名稱(container_name)一致，才能和MySQL容器互相連線
+      - DB_USER=root
+      - DB_PASSWORD=clwy1234
+      # - DB_NAME=clwy_api_development  # 這裡應與 MYSQL_DATABASE 保持一致
+      - DB_PORT=3306  # 設定 MySQL 的連接端口，這裡應設為 3306
+      - PORT=3039  # 設定docker的監聽端口變數，讓程式碼可以在內部取得，要和docker運行端口一樣
+      #- NODE_ENV=development  # 在開發環境中設置為 development

@@ -3,23 +3,23 @@
     "username": "root",
     "password": "clwy1234",
     "database": "clwy_api_development",
-    "host": "127.0.0.1",
+    "host": "clwy-api", 
     "dialect": "mysql",
-    "timezone":"+08:00",
+    "timezone": "+08:00",
     "LogQueryParameters": true
   },
   "test": {
     "username": "root",
     "password": null,
     "database": "clwy_api_development",
-    "host": "127.0.0.1",
+    "host": "clwy-api", 
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
     "password": null,
     "database": "clwy_api_development",
-    "host": "127.0.0.1",
+    "host": "clwy-api", 
     "dialect": "mysql"
   }
 }
