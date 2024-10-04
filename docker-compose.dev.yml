@@ -1,7 +1,7 @@
 version: '3'
 services:
   # MySQL 服務
-  mysql:
+  mysql: # 服務名稱
     image: mysql:8.3.0
     container_name: mysql_container
     command:
@@ -9,8 +9,8 @@ services:
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_general_ci
     environment:
-      - MYSQL_ROOT_PASSWORD=clwy1234
-      # - MYSQL_DATABASE=clwy_api_development  # MySQL 容器內部創建的資料庫名稱，可隨意命名，但應與 DB_NAME 一致
+      - NODE_ENV=development
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_LOWER_CASE_TABLE_NAMES=0
     ports:
       - "3306:3306"
@@ -23,14 +23,12 @@ services:
     build: .
     container_name: node_container
     ports:
-      - "3038:3039" #左邊是伺服器端口：右邊是docker運行端口
+      - "3039:3039" #左邊是伺服器端口：右邊是docker運行端口
     volumes:
       - .:/usr/src/app
     depends_on:
       - mysql
     environment: #設置容器內的參數
-      - DB_HOST=mysql  # 這裡的 DB_HOST 必須與MySQL容器名稱(container_name)一致，才能和MySQL容器互相連線
-      - DB_USER=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_PORT=3306  # 設定 MySQL 的連接端口，這裡應設為 3306
-      - MYSQL_CONTAINER_PORT=${MYSQL_CONTAINER_PORT}  # 設定docker的監聽端口變數，讓程式碼可以在內部取得，要和docker運行端口一樣
+      - NODE_ENV=development
+
+

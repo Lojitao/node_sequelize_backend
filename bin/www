@@ -5,9 +5,9 @@ let debug = require('debug')('clwy-api:server');
 let http = require('http');
 const sequelize = require('../config/database');  // 引入 Sequelize 連接
 
-let port = normalizePort(process.env.MYSQL_CONTAINER_PORT || 3000);//要和docker-compose.yml的app的ports右邊docker ports一樣
+let port = normalizePort(process.env.NODE_CONTAINER_PORT);
 
-console.log('port',port);
+console.log('NODE容器端口',port);
 app.set('port', port);
 
 let server = http.createServer(app);
