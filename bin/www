@@ -5,12 +5,15 @@ let debug = require('debug')('clwy-api:server');
 let http = require('http');
 const sequelize = require('../config/database');  // 引入 Sequelize 連接
 
-let port = normalizePort(process.env.PORT || '3000');//要和docker-compose.yml的app的ports右邊docker ports一樣
+let port = normalizePort(process.env.MYSQL_CONTAINER_PORT || 3000);//要和docker-compose.yml的app的ports右邊docker ports一樣
+
+console.log('port',port);
 app.set('port', port);
 
 let server = http.createServer(app);
 
-// // 先進行資料庫連接驗證
+//先進行資料庫連接驗證
+//要連接的是MySQL容器port，而不是對外暴露的port。
 sequelize.authenticate()
   .then(() => {
     console.log('sequelize進行資料庫連接驗證，成功.');

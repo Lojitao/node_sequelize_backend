@@ -14,22 +14,22 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./data/mysql:/var/lib/mysql 
+      - ./data/mysql:/var/lib/mysql
 
   # Node.js 服務
   app:
     build: .
     container_name: clwy-api-node
     ports:
-      - "3039"
+      - "3039"  # 只需要暴露容器內部的 3039 端口即可，外部請求將由 Nginx 處理
     volumes:
       - .:/usr/src/app
     depends_on:
       - mysql
     environment:
-      - DB_HOST=${DB_HOST}
-      - DB_USER=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=clwy-api-mysql
+      - DB_USER=root
+      - DB_PASSWORD=clwy1234
       - DB_PORT=3306
       - MYSQL_CONTAINER_PORT=${MYSQL_CONTAINER_PORT}
 
