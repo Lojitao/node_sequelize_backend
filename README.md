@@ -4,3 +4,6 @@
  - timezone:時區
 
 ＃router/*.js檔是前台的API;後臺管理頁的API放在router/admin資料夾下
+
+#啟動指令
+- 生產環境：docker-compose --env-file .env.production -f docker-compose.prod.yml up -d

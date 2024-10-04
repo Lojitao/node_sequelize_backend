@@ -10,6 +10,7 @@ services:
       --collation-server=utf8mb4_general_ci
     environment:
       - NODE_ENV=production
+      - MYSQL_DATABASE=${db_production}
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
       - MYSQL_LOWER_CASE_TABLE_NAMES=0
     ports:
@@ -33,3 +34,4 @@ services:
 networks:
   web:
     external: true  # 確保該網絡是外部的，以便 Nginx 可以與 Node.js 進行通信
+
