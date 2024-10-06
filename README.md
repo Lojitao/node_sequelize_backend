@@ -7,3 +7,4 @@
 
 #啟動指令
 - 生產環境：docker-compose --env-file .env.production -f docker-compose.prod.yml up -d
+- 生產環境：sudo docker-compose --env-file .env.production -f docker-compose.prod.yml down
