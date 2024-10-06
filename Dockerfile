@@ -6,8 +6,8 @@ WORKDIR /usr/src/app
 
 # 复制 package.json 并安装依赖
 COPY package*.json ./
-RUN npm ci && npm prune --production
-#RUN npm install && npm prune --production
+RUN npm install && npm prune --production
+#RUN npm ci && npm prune --production
 # 复制应用程序源代码
 COPY . .
 

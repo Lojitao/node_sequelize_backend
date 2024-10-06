@@ -42,6 +42,6 @@ services:
 
 networks:
   web:
-    driver: bridge
-    #external: true  # 確保該網絡是外部的，以便 Nginx 可以與 Node.js 進行通信
+    #driver: bridge
+    external: true  # 確保該網絡是外部的，以便 Nginx 可以與 Node.js 進行通信
 
