@@ -40,10 +40,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 const allowOrigin ={// 白名單：可發請求的域名
-  origin:[
-    'https://clwy.cn',
-    'http://127.0.0.1:5500'
-  ]
+  origin: function (origin, callback) {
+    // 白名單域名
+    const whitelist = [
+      'https://clwy.cn',
+      'http://127.0.0.1:5500',
+      'http://127.0.0.1:5173',
+      'http://localhost:5173'
+    ];
+    // 檢查是否在白名單內，或請求為空（某些情況下本地請求會空值 origin）
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
 }
 app.use(cors(allowOrigin))//ＣCORS配置，位置一定要放在路由上面！！！
 

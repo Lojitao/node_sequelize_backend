@@ -19,15 +19,6 @@ router.get('/', async(req, res, next)=>{
     const offset = (currentPage-1) * pageSize
 
     const condition = {
-      // include: [
-      //   {
-      //     model: Category
-      //   },
-      //   {
-      //     model: User
-      //   }
-      // ],
-      // exclude,排除不要的欄位
       ...getCondition(),
       order:[['id','DESC']],
       limit:pageSize,

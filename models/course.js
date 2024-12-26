@@ -22,11 +22,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
-        notNull: { msg: '分类ID必须填写。' },
-        notEmpty: { msg: '分类ID不能为空。' },
+        notNull: { msg: '分類ID為必填。' },
+        notEmpty: { msg: '分類ID不能為空。' },
         async isPresent(value){//請求的參數寫進資料庫前要確認Category表是否有對應的id;避免變成孤兒資料(沒有關聯的資料)
           const category = await sequelize.models.Category.findByPk(value)
-          if (!category) throw new Error(`ID为: ${value} 的分类不存在。`);
+          if (!category) throw new Error(`ID為: ${value} 的分類不存在。`);
         }
       }
     },
