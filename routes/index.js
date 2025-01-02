@@ -7,8 +7,11 @@ const { success, failure } = require('../utils/responses');
  * 查询首页数据
  * GET /
  */
+
+console.log('Index Router loaded');
 router.get('/', async function (req, res) {
   try {
+    console.log('GET /api');
     //banner(推薦課程)
     const recommendedCourses = await Course.findAll({
       attributes: { exclude: ['CategoryId', 'UserId', 'content'] },
