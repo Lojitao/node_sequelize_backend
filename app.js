@@ -67,7 +67,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // 前台路由配置
-app.use('/api', indexRouter);
+app.use('/api/list', indexRouter);
+// app.use('/api', (req, res) => {
+//   res.status(404).json({ message: 'API endpoint not found' });
+// });
 app.use('/api/categories', categoriesRouter);
 app.use('/api/courses', coursesRouter);
 app.use('/api/chapters', chaptersRouter);
