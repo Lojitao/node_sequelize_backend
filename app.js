@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const adminMiddleAuth = require('./middlewares/admin-auth')//引入中間件
 const userMiddleAuth = require('./middlewares/user-auth')//引入中間件
-// const cors = require('cors')//引入cors套件
+const cors = require('cors')//引入cors套件
 require('dotenv').config()//引入環境變數
 
 //前台路由文件
@@ -27,6 +27,9 @@ const adminCourse = require('./routes/admin/courses');
 const adminChapter = require('./routes/admin/chapter');
 const adminChart = require('./routes/admin/chart');
 const adminAuth = require('./routes/admin/auth');
+const adminBlogCategory = require('./routes/admin/blogCategories');
+const adminBlog = require('./routes/admin/blog');
+
 
 
 const app = express();
@@ -45,24 +48,24 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-// const allowOrigin ={// 白名單：可發請求的域名
-//   origin: function (origin, callback) {
-//     // 白名單域名
-//     const whitelist = [
-//       'https://clwy.cn',
-//       'http://127.0.0.1:5500',
-//       'http://127.0.0.1:5173',
-//       'http://localhost:5173'
-//     ];
-//     // 檢查是否在白名單內，或請求為空（某些情況下本地請求會空值 origin）
-//     if (whitelist.indexOf(origin) !== -1 || !origin) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   }
-// }
-// app.use(cors(allowOrigin))//ＣCORS配置，位置一定要放在路由上面！！！
+const allowOrigin ={// 白名單：可發請求的域名
+  origin: function (origin, callback) {
+    // 白名單域名
+    const whitelist = [
+      'https://clwy.cn',
+      'http://127.0.0.1:5500',
+      'http://127.0.0.1:5173',
+      'http://localhost:5173'
+    ];
+    // 檢查是否在白名單內，或請求為空（某些情況下本地請求會空值 origin）
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}
+app.use(cors(allowOrigin))//ＣCORS配置，位置一定要放在路由上面！！！
 
 
 
@@ -90,6 +93,9 @@ app.use('/api/admin/users',    adminMiddleAuth , adminUser);
 app.use('/api/admin/courses',  adminMiddleAuth , adminCourse);
 app.use('/api/admin/chapters', adminMiddleAuth , adminChapter);
 app.use('/api/admin/charts',   adminMiddleAuth , adminChart);
+app.use('/api/admin/blogCategory' ,adminMiddleAuth, adminBlogCategory);
+app.use('/api/admin/Blog' ,adminMiddleAuth, adminBlog);
+
 app.use('/api/admin/auth' , adminAuth);
 
 
